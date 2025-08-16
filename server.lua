@@ -56,11 +56,6 @@ RegisterNetEvent('mechanic:claimSalary', function()
     end
 end)
 
-RegisterNetEvent('mechanic:customizeVehicle', function()
-    local src = source
-    TriggerClientEvent('mechanic:notify', src, 'Vehicle upgraded: Turbo, Engine, Nitrous installed!', 'success')
-end)
-
 RegisterNetEvent('mechanic:hire', function(targetId)
     local id = GetPlayerIdentifier(targetId)
     employeeData[id] = { grade = 'mechanic', clockedIn = false, time = 0 }
@@ -91,8 +86,4 @@ RegisterNetEvent('mechanic:payEmployee', function(targetId, amount)
     if safeBalance >= amount then
         safeBalance = safeBalance - amount
         TriggerClientEvent('mechanic:notify', src, 'Paid employee $' .. amount, 'success')
-        saveData()
-    else
-        TriggerClientEvent('mechanic:notify', src, 'Not enough in safe.', 'error')
-    end
-end)
+        save
