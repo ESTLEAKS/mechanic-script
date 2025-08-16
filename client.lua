@@ -20,18 +20,18 @@ end)
 
 RegisterNetEvent('mechanic:openMenu', function(grade)
     local options = {
-        { title = 'Clocked In Status', event = 'mechanic:clocked' },
-        { title = 'Check Salary', event = 'mechanic:salary' }
+        { title = 'Clock In', event = 'mechanic:clockIn' },
+        { title = 'Clock Out', event = 'mechanic:clockOut' },
+        { title = 'Claim Salary', event = 'mechanic:claimSalary' },
+        { title = 'Customize Vehicle', event = 'mechanic:customizeVehicle' }
     }
-
-    if Config.JobGrades[grade].canCustomize then
-        table.insert(options, { title = 'Customize Vehicle', event = 'mechanic:customize' })
-    end
 
     if Config.JobGrades[grade].canManage then
         table.insert(options, { title = 'Hire Employee', event = 'mechanic:hire' })
         table.insert(options, { title = 'Fire Employee', event = 'mechanic:fire' })
         table.insert(options, { title = 'Promote/Demote', event = 'mechanic:manageRoles' })
+        table.insert(options, { title = 'Check Safe Balance', event = 'mechanic:checkSafe' })
+        table.insert(options, { title = 'Pay Employee', event = 'mechanic:payEmployee' })
         table.insert(options, { title = 'Relocate Shop', event = 'mechanic:relocate' })
     end
 
@@ -42,4 +42,8 @@ RegisterNetEvent('mechanic:openMenu', function(grade)
     })
 
     lib.showContext('mechanic_menu')
+end)
+
+RegisterNetEvent('mechanic:notify', function(msg, type)
+    exports['okokNotify']:Alert("Mechanic", msg, 5000, type)
 end)
