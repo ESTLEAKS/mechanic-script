@@ -22,7 +22,3 @@ Config.Salary = {
 
 Config.RequiredHours = 6 * 60 * 60 -- 6 hours in seconds
 Config.SafeAmount = 100000 -- Starting safe balance
-
-
-
-
