@@ -22,8 +22,7 @@ RegisterNetEvent('mechanic:openMenu', function(grade)
     local options = {
         { title = 'Clock In', event = 'mechanic:clockIn' },
         { title = 'Clock Out', event = 'mechanic:clockOut' },
-        { title = 'Claim Salary', event = 'mechanic:claimSalary' },
-        { title = 'Customize Vehicle', event = 'mechanic:customizeVehicle' }
+        { title = 'Claim Salary', event = 'mechanic:claimSalary' }
     }
 
     if Config.JobGrades[grade].canManage then
@@ -48,31 +47,85 @@ RegisterNetEvent('mechanic:notify', function(msg, type)
     exports['okokNotify']:Alert("Mechanic", msg, 5000, type)
 end)
 
-RegisterNetEvent('mechanic:customizeVehicle', function()
+RegisterCommand('customize', function()
+    TriggerServerEvent('mechanic:openCustomizationMenu')
+end, false)
+
+RegisterNetEvent('mechanic:showCustomizationMenu', function()
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     if vehicle == 0 then
         TriggerEvent('mechanic:notify', 'You are not in a vehicle.', 'error')
         return
     end
 
-    SetVehicleModKit(vehicle, 0)
+    lib.registerContext({
+        id = 'customization_menu',
+        title = 'Vehicle Customization',
+        options = {
+            { title = 'Primary Color', event = 'mechanic:setColor', args = { type = 'primary', color = 12 } },
+            { title = 'Secondary Color', event = 'mechanic:setColor', args = { type = 'secondary', color = 5 } },
+            { title = 'Pearlescent', event = 'mechanic:setPearlescent', args = { color = 3 } },
+            { title = 'Tire Smoke', event = 'mechanic:setSmoke' },
+            { title = 'Window Tint', event = 'mechanic:setTint', args = { tint = 3 } },
+            { title = 'Wheels & Rims', event = 'mechanic:setWheels', args = { type = 7, style = 10 } },
+            { title = 'Turbo & Engine', event = 'mechanic:setPerformance' },
+            { title = 'Nitrous Boost', event = 'mechanic:setNitrous' }
+        }
+    })
 
-    -- Performance Mods
-    ToggleVehicleMod(vehicle, 18, true) -- Turbo
-    SetVehicleMod(vehicle, 11, 3, false) -- Engine
-    SetVehicleMod(vehicle, 12, 2, false) -- Brakes
-    SetVehicleMod(vehicle, 13, 2, false) -- Transmission
-
-    -- Visual Mods
-    SetVehicleColours(vehicle, 12, 5) -- Primary/Secondary
-    SetVehicleExtraColours(vehicle, 3, 3) -- Pearlescent/Tire smoke
-    SetVehicleWindowTint(vehicle, 3)
-    SetVehicleWheelType(vehicle, 7)
-    SetVehicleMod(vehicle, 23, 10, false) -- Wheels
-
-    TriggerEvent('mechanic:notify', 'Vehicle fully customized!', 'success')
+    lib.showContext('customization_menu')
 end)
 
-RegisterCommand('customize', function()
-    TriggerServerEvent('mechanic:checkPermission')
-end, false)
+RegisterNetEvent('mechanic:setColor', function(data)
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    SetVehicleModKit(vehicle, 0)
+    local r, g = GetVehicleColours(vehicle)
+    if data.type == 'primary' then
+        SetVehicleColours(vehicle, data.color, g)
+    elseif data.type == 'secondary' then
+        SetVehicleColours(vehicle, r, data.color)
+    end
+    TriggerEvent('mechanic:notify', 'Color updated!', 'success')
+end)
+
+RegisterNetEvent('mechanic:setPearlescent', function(data)
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    SetVehicleExtraColours(vehicle, data.color, 0)
+    TriggerEvent('mechanic:notify', 'Pearlescent applied!', 'success')
+end)
+
+RegisterNetEvent('mechanic:setSmoke', function()
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    ToggleVehicleMod(vehicle, 20, true)
+    SetVehicleTyreSmokeColor(vehicle, 255, 0, 0)
+    TriggerEvent('mechanic:notify', 'Tire smoke added!', 'success')
+end)
+
+RegisterNetEvent('mechanic:setTint', function(data)
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    SetVehicleWindowTint(vehicle, data.tint)
+    TriggerEvent('mechanic:notify', 'Window tint applied!', 'success')
+end)
+
+RegisterNetEvent('mechanic:setWheels', function(data)
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    SetVehicleWheelType(vehicle, data.type)
+    SetVehicleMod(vehicle, 23, data.style, false)
+    TriggerEvent('mechanic:notify', 'Wheels updated!', 'success')
+end)
+
+RegisterNetEvent('mechanic:setPerformance', function()
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    SetVehicleModKit(vehicle, 0)
+    SetVehicleMod(vehicle, 11, 3, false)
+    SetVehicleMod(vehicle, 12, 2, false)
+    SetVehicleMod(vehicle, 13, 2, false)
+    ToggleVehicleMod(vehicle, 18, true)
+    TriggerEvent('mechanic:notify', 'Performance upgraded!', 'success')
+end)
+
+RegisterNetEvent('mechanic:setNitrous', function()
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    ToggleVehicleMod(vehicle, 20, true)
+    TriggerEvent('mechanic:notify', 'Nitrous installed!', 'success')
+end)
