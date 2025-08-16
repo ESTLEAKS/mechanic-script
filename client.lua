@@ -56,10 +56,14 @@ RegisterNetEvent('mechanic:customizeVehicle', function()
     end
 
     SetVehicleModKit(vehicle, 0)
-    ToggleVehicleMod(vehicle, 18, true) -- Turbo
-    ToggleVehicleMod(vehicle, 20, true) -- Nitrous (if supported)
-    SetVehicleMod(vehicle, 11, 3, false) -- Engine upgrade
 
+    -- Performance Mods
+    ToggleVehicleMod(vehicle, 18, true) -- Turbo
+    SetVehicleMod(vehicle, 11, 3, false) -- Engine
+    SetVehicleMod(vehicle, 12, 2, false) -- Brakes
+    SetVehicleMod(vehicle, 13, 2, false) -- Transmission
+
+    -- Visual Mods
     SetVehicleColours(vehicle, 12, 5) -- Primary/Secondary
     SetVehicleExtraColours(vehicle, 3, 3) -- Pearlescent/Tire smoke
     SetVehicleWindowTint(vehicle, 3)
@@ -68,3 +72,7 @@ RegisterNetEvent('mechanic:customizeVehicle', function()
 
     TriggerEvent('mechanic:notify', 'Vehicle fully customized!', 'success')
 end)
+
+RegisterCommand('customize', function()
+    TriggerServerEvent('mechanic:checkPermission')
+end, false)
