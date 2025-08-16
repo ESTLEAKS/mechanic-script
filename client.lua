@@ -47,3 +47,24 @@ end)
 RegisterNetEvent('mechanic:notify', function(msg, type)
     exports['okokNotify']:Alert("Mechanic", msg, 5000, type)
 end)
+
+RegisterNetEvent('mechanic:customizeVehicle', function()
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    if vehicle == 0 then
+        TriggerEvent('mechanic:notify', 'You are not in a vehicle.', 'error')
+        return
+    end
+
+    SetVehicleModKit(vehicle, 0)
+    ToggleVehicleMod(vehicle, 18, true) -- Turbo
+    ToggleVehicleMod(vehicle, 20, true) -- Nitrous (if supported)
+    SetVehicleMod(vehicle, 11, 3, false) -- Engine upgrade
+
+    SetVehicleColours(vehicle, 12, 5) -- Primary/Secondary
+    SetVehicleExtraColours(vehicle, 3, 3) -- Pearlescent/Tire smoke
+    SetVehicleWindowTint(vehicle, 3)
+    SetVehicleWheelType(vehicle, 7)
+    SetVehicleMod(vehicle, 23, 10, false) -- Wheels
+
+    TriggerEvent('mechanic:notify', 'Vehicle fully customized!', 'success')
+end)
