@@ -56,6 +56,17 @@ RegisterNetEvent('mechanic:claimSalary', function()
     end
 end)
 
+RegisterNetEvent('mechanic:checkPermission', function()
+    local src = source
+    local id = GetPlayerIdentifier(src)
+    local data = employeeData[id]
+    if data and Config.JobGrades[data.grade] and Config.JobGrades[data.grade].canCustomize then
+        TriggerClientEvent('mechanic:customizeVehicle', src)
+    else
+        TriggerClientEvent('mechanic:notify', src, 'You are not authorized to customize vehicles.', 'error')
+    end
+end)
+
 RegisterNetEvent('mechanic:hire', function(targetId)
     local id = GetPlayerIdentifier(targetId)
     employeeData[id] = { grade = 'mechanic', clockedIn = false, time = 0 }
@@ -68,22 +79,4 @@ RegisterNetEvent('mechanic:fire', function(targetId)
     saveData()
 end)
 
-RegisterNetEvent('mechanic:manageRoles', function(targetId, newGrade)
-    local id = GetPlayerIdentifier(targetId)
-    if employeeData[id] then
-        employeeData[id].grade = newGrade
-        saveData()
-    end
-end)
-
-RegisterNetEvent('mechanic:checkSafe', function()
-    local src = source
-    TriggerClientEvent('mechanic:notify', src, 'Safe Balance: $' .. safeBalance, 'info')
-end)
-
-RegisterNetEvent('mechanic:payEmployee', function(targetId, amount)
-    local src = source
-    if safeBalance >= amount then
-        safeBalance = safeBalance - amount
-        TriggerClientEvent('mechanic:notify', src, 'Paid employee $' .. amount, 'success')
-        save
+RegisterNetEvent('mechanic:manageRoles', function(target
