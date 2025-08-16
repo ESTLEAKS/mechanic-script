@@ -1,3 +1,5 @@
+Config = {}
+
 Config.Shops = {
     ['pillbox'] = {
         coords = vector3(117.0, -1300.0, 29.0),
@@ -22,4 +24,6 @@ Config.Salary = {
     supervisor = 800,
     boss = 1200
 }
+
+
 
