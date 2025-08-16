@@ -11,8 +11,15 @@ Config.Shops = {
     }
 }
 
+Config.JobGrades = {
+    ['boss'] = { label = 'Boss', canCustomize = true, canManage = true },
+    ['supervisor'] = { label = 'Supervisor', canCustomize = true, canManage = false },
+    ['mechanic'] = { label = 'Mechanic', canCustomize = false, canManage = false }
+}
+
 Config.Salary = {
     mechanic = 500,
     supervisor = 800,
-    manager = 1000
+    boss = 1200
 }
+
