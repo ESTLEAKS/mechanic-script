@@ -20,15 +20,18 @@ end)
 
 RegisterNetEvent('mechanic:openMenu', function(grade)
     local options = {
-        { title = 'Customize Vehicle', event = 'mechanic:customize' },
         { title = 'Clocked In Status', event = 'mechanic:clocked' },
-        { title = 'Check Salaries', event = 'mechanic:salary' }
+        { title = 'Check Salary', event = 'mechanic:salary' }
     }
+
+    if Config.JobGrades[grade].canCustomize then
+        table.insert(options, { title = 'Customize Vehicle', event = 'mechanic:customize' })
+    end
 
     if Config.JobGrades[grade].canManage then
         table.insert(options, { title = 'Hire Employee', event = 'mechanic:hire' })
         table.insert(options, { title = 'Fire Employee', event = 'mechanic:fire' })
-        table.insert(options, { title = 'Manage Roles', event = 'mechanic:manageRoles' })
+        table.insert(options, { title = 'Promote/Demote', event = 'mechanic:manageRoles' })
         table.insert(options, { title = 'Relocate Shop', event = 'mechanic:relocate' })
     end
 
