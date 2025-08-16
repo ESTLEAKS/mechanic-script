@@ -10,7 +10,7 @@ CreateThread(function()
                 if dist < 1.0 then
                     currentShop = shop
                     if IsControlJustReleased(0, 38) then
-                        openMechanicMenu(shop)
+                        TriggerServerEvent('mechanic:getGrade')
                     end
                 end
             end
@@ -18,18 +18,25 @@ CreateThread(function()
     end
 end)
 
-function openMechanicMenu(shop)
+RegisterNetEvent('mechanic:openMenu', function(grade)
+    local options = {
+        { title = 'Customize Vehicle', event = 'mechanic:customize' },
+        { title = 'Clocked In Status', event = 'mechanic:clocked' },
+        { title = 'Check Salaries', event = 'mechanic:salary' }
+    }
+
+    if Config.JobGrades[grade].canManage then
+        table.insert(options, { title = 'Hire Employee', event = 'mechanic:hire' })
+        table.insert(options, { title = 'Fire Employee', event = 'mechanic:fire' })
+        table.insert(options, { title = 'Manage Roles', event = 'mechanic:manageRoles' })
+        table.insert(options, { title = 'Relocate Shop', event = 'mechanic:relocate' })
+    end
+
     lib.registerContext({
         id = 'mechanic_menu',
-        title = Config.Shops[shop].label,
-        options = {
-            { title = 'Customize Vehicle', event = 'mechanic:customize' },
-            { title = 'Hire Employee', event = 'mechanic:hire' },
-            { title = 'Fire Employee', event = 'mechanic:fire' },
-            { title = 'Check Salaries', event = 'mechanic:salary' },
-            { title = 'Clocked In Status', event = 'mechanic:clocked' },
-            { title = 'Relocate Shop', event = 'mechanic:relocate' },
-        }
+        title = Config.Shops[currentShop].label,
+        options = options
     })
+
     lib.showContext('mechanic_menu')
-end
+end)
